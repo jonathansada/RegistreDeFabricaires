@@ -36,6 +36,8 @@ python filldb.py
 - **DB_CON_STRING**: A valid SQLAlchemy [Database URL](https://docs.sqlalchemy.org/en/21/core/engines.html#database-urls) (tested on SQLite)
 - **DB_DEBUG**: Use 1 or 0 to define if you want to debug the database.
 - **FLASK_SECRET**: Flask [cryptographic](https://flask.palletsprojects.com/en/stable/api/#flask.Flask.secret_key) key required for keeping cookies safe.
+- **ADMIN_USER**: Username for the administration space.
+- **ADMIN_PASSWORD**: Password for the administration space.
 
 # Run App (Debug Mode)
 This is expected to be executed in the project main directory

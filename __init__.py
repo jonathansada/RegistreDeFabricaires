@@ -63,9 +63,10 @@ def admin():
         user     = request.form['user']
         password = request.form['password']
 
-        if user=="admin" and password=="admin":
+        if user==os.getenv('ADMIN_USER') and password==os.getenv('ADMIN_PASSWORD'):
             session['admin'] = True
-            return redirect("/admin")
+        
+        return redirect("/admin")
     else:
         if 'admin' in session:
             db = Database(connection=dbConnection, debug=debug)

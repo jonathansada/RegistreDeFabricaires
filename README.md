@@ -8,6 +8,7 @@ This was done as an opportunity to practice with SQLAlchemy and Flask as the sam
 # Set-up App
 This is expected to be using Conda (throough micro-forge)
 
+## 1. Prepare the environment
 Install the conda environment
 ``` bash
 conda env create --name EspluLab --file base_env.yml
@@ -17,6 +18,18 @@ Install pip requirements
 ```bash
 pip install -r requirements.txt
 ```
+## 2. Configure the App
+Duplicate the file `template.env` as `.env` 
+```bash
+cp template.env .env
+```
+
+And set the environment vars for the application
+
+# Environment Vars
+- **DB_CON_STRING**: A valid SQLAlchemy [Database URL](https://docs.sqlalchemy.org/en/21/core/engines.html#database-urls) (tested on SQLite)
+- **DB_DEBUG**: Use 1 or 0 to define if you want to debug the database.
+- **FLASK_SECRET**: Flask [cryptographic](https://flask.palletsprojects.com/en/stable/api/#flask.Flask.secret_key) key required for keeping cookies safe.
 
 # Run App (Debug Mode)
 This is expected to be executed in the project main directory

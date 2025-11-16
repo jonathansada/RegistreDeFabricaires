@@ -1,10 +1,13 @@
+import os
+from dotenv import load_dotenv
+
 from sqlalchemy import create_engine, func, ForeignKey, Integer, String, DateTime
 from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
 from typing import List, Optional
 
 from src.database import Base, Visit, Activity, Machine, Material, Workshop
 
-engine = create_engine('sqlite:///./data/db/esplulab.db', echo=True)
+engine = create_engine(os.getenv('DB_CON_STRING'), echo=True)
 Session = sessionmaker(bind=engine)
 session = Session()
 

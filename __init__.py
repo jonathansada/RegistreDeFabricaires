@@ -1,12 +1,14 @@
+import os
+from dotenv import load_dotenv
+
 from flask import Flask, request, render_template, session, redirect, jsonify
 from .src.database import Database
 
-
 app = Flask(__name__)
-app.secret_key = b'IMOIdObEYYyEodR0yw7ISGIdFckquw'
+app.secret_key = os.getenv('FLASK_SECRET')
 
-dbConnection = 'sqlite:///./data/db/esplulab.db'
-debug = True
+dbConnection = os.getenv('DB_CON_STRING')
+debug = bool(os.getenv('DB_DEBUG'))
 
 ###########
 # User Side

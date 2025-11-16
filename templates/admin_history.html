@@ -3,23 +3,22 @@
 <table class="table table-striped"">
     <thead>
         <tr>
-            <th scope="col">Date</th>
-            <th scope="col">User</th>
-            <th scope="col">Activity</th>
-            <th scope="col">Machine</th>
+            <th scope="col">Data</th>
+            <th scope="col">Nom</th>
+            <th scope="col">Cognom</th>
+            <th scope="col">Activitat</th>
+            <th scope="col">Màquina</th>
             <th scope="col">Material</th>
-            <th scope="col">Workshop</th>
+            <th scope="col">Us de l'espai(h)</th>
+            <th scope="col">Us del maquinari(h)</th>
         </tr>
     </thead>
     <tbody>
     {% for signin in history %}
         <tr>
-            <td scope="row">{{ signin[0] }}</td>
-            <td>{{ signin[1] }}</td>
-            <td>{{ signin[2] }}</td>
-            <td>{{ signin[3] }}</td>
-            <td>{{ signin[4] }}</td>
-            <td>{{ signin[5] }}</td>
+            {% for field in range(8) %}
+                <td>{{ signin[field] }}</td>
+            {% endfor %}
         </tr>
     {% endfor %}
     </tbody>

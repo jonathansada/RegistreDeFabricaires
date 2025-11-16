@@ -1,27 +1,33 @@
 {% extends "template.html" %}
 {% block content %}
 <form id="form_signin" method="POST" action="checkin">
-    <div class="row">
+    <div class="row mb-3">
         <div class="col">
-            <label for="date" class="form-label">Nom:</label>
-            <input type="text" name="user" class="form-control"/>
+            <label for="fname" class="form-label">Nom:</label>
+            <input type="text" name="fname" class="form-control"/>
         </div>
         <div class="col">
-            <label for="date" class="form-label">Data:</label>
+            <label for="sname" class="form-label">Cognom:</label>
+            <input type="text" name="sname" class="form-control"/>
+        </div>
+    </div>
+    <div class="row mb-3">
+        <div class="col">
+            <label for="date" class="form-label">Activitat:</label>
+            <select id="sel_activity" name="activity" class="form-select" aria-describedby="activityHelp">
+                <option value="-1" selected> </option>
+                {% for activity in activities %}
+                    <option value="{{activity[0]}}">{{activity[1]}}</option>
+                {% endfor %}
+            </select>
+            <div id="activityHelp" class="form-text">Seleccioni el motiu de la seva visita.</div>
+        </div>
+        <div class="col">
+            <label for="date" class="form-label">Data i hora d'inici:</label>
             <input id="in_date" type="datetime-local" name="date" value="" class="form-control"/>
         </div>
     </div>
-    <div class="mb-3">
-        <label for="date" class="form-label">Activitat:</label>
-        <select id="sel_activity" name="activity" class="form-select" aria-describedby="activityHelp">
-            <option value="-1" selected> </option>
-            {% for activity in activities %}
-                <option value="{{activity[0]}}">{{activity[1]}}</option>
-            {% endfor %}
-        </select>
-        <div id="activityHelp" class="form-text">Seleccioni el motiu de la seva visita.</div>
-    </div>
-    <div id="extended_form">
+    <div id="extended_form" class="mb-3">
 
     </div>
     <div class="alert alert-success visually-hidden" role="alert" id="success_alert">
@@ -39,6 +45,7 @@
             alert.classList.add("visually-hidden");
             document.getElementById("btn_submit").classList.remove("visually-hidden");
         }
+        document.getElementById("extended_form").innerHTML="";
         document.getElementById("form_signin").reset();
         dateUpdateInt = setInterval(updateDate, 1000);
         updateDate();
@@ -64,9 +71,6 @@
                 }
                 if(answer.materials != false){
                     addFormSelector("Quin material faràs servir?", "sel_materials", "material",  answer.materials);
-                }
-                if(answer.workshops != false){
-                    addFormSelector("Quin es el nom del taller?", "sel_workshops", "workshop",  answer.workshops);
                 }
             }
             xhttp.open("GET", "getActivityDetails/" + activity, true);
@@ -113,21 +117,19 @@
 
         params   = new FormData(event.target);
         date     = params.getAll("date")
-        user     = params.getAll("user")
+        fname    = params.getAll("fname")
+        sname    = params.getAll("sname")
         activity = params.getAll("activity")
         machine  = document.getElementById("sel_machines")  ? params.getAll("machine") : null;
         material = document.getElementById("sel_materials") ? params.getAll("material") : null;
-        workshop = document.getElementById("sel_workshops") ? params.getAll("workshop") : null;
-
-        console.log(date)
-
-        if(date != '' && user != '' && activity != -1 && machine != -1  && material != -1 && workshop != -1){
+        
+        if(date != '' && fname != '' && sname != '' && activity != -1 && machine != -1  && material != -1){
             xhttp = new XMLHttpRequest();
             xhttp.onload = function() {
                 answer = JSON.parse(this.responseText);
                 if(answer["result"] == "success"){
                     var alert =  document.getElementById("success_alert")
-                    alert.innerHTML = "Benvingut " + user;
+                    alert.innerHTML = "Gracies " + fname + " " + sname + ".<br/>El teu registre s'ha realitzat correctament.";
                     alert.classList.remove("visually-hidden");
                     document.getElementById("btn_submit").classList.add("visually-hidden");
                 }else{

@@ -1,0 +1,150 @@
+{% extends "template.html" %}
+{% block content %}
+<form id="form_signin" method="POST" action="checkin">
+    <div class="row">
+        <div class="col">
+            <label for="date" class="form-label">Nom:</label>
+            <input type="text" name="user" class="form-control"/>
+        </div>
+        <div class="col">
+            <label for="date" class="form-label">Data:</label>
+            <input id="in_date" type="datetime-local" name="date" value="" class="form-control"/>
+        </div>
+    </div>
+    <div class="mb-3">
+        <label for="date" class="form-label">Activitat:</label>
+        <select id="sel_activity" name="activity" class="form-select" aria-describedby="activityHelp">
+            <option value="-1" selected> </option>
+            {% for activity in activities %}
+                <option value="{{activity[0]}}">{{activity[1]}}</option>
+            {% endfor %}
+        </select>
+        <div id="activityHelp" class="form-text">Seleccioni el motiu de la seva visita.</div>
+    </div>
+    <div id="extended_form">
+
+    </div>
+    <div class="alert alert-success visually-hidden" role="alert" id="success_alert">
+        A simple success alert—check it out!
+    </div>
+    <input id="btn_submit" type="submit" value="Envià" class="btn btn-primary"/>
+</form>
+
+<script>    
+    var dateUpdateInt = false;
+    function init(){
+        var alert =  document.getElementById("success_alert")
+        alert.innerHTML = "";
+        if(alert.classList.contains("visually-hidden")==false){
+            alert.classList.add("visually-hidden");
+            document.getElementById("btn_submit").classList.remove("visually-hidden");
+        }
+        document.getElementById("form_signin").reset();
+        dateUpdateInt = setInterval(updateDate, 1000);
+        updateDate();
+    }
+    
+    function updateDate(){
+        var date = new Date();
+        document.getElementById("in_date").value = date.getFullYear().toString() + '-' + (date.getMonth() + 1).toString().padStart(2, 0) + '-' + date.getDate().toString().padStart(2, 0)+'T'+date.getHours().toString().padStart(2, 0)+":"+date.getMinutes().toString().padStart(2, 0);
+    }
+
+    document.getElementById("in_date").addEventListener("focus", function(){ console.log("cambio!"); clearInterval(dateUpdateInt); })
+    
+    function loadActivityDetails(event){
+        activity = event.target.value;
+        if(activity != -1){
+            xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                answer = JSON.parse(this.responseText);
+
+                document.getElementById("extended_form").innerHTML="";
+                if(answer.machines != false){
+                    addFormSelector("Quina màquina faràs servir?", "sel_machines", "machine", answer.machines);
+                }
+                if(answer.materials != false){
+                    addFormSelector("Quin material faràs servir?", "sel_materials", "material",  answer.materials);
+                }
+                if(answer.workshops != false){
+                    addFormSelector("Quin es el nom del taller?", "sel_workshops", "workshop",  answer.workshops);
+                }
+            }
+            xhttp.open("GET", "getActivityDetails/" + activity, true);
+            xhttp.send();
+        }
+    }
+
+
+    function addFormSelector(label, id, name, options){
+        // create dropdown
+        selector = document.createElement("select");
+        selector.id = id;
+        selector.name = name;      
+
+        sel_op = document.createElement("option")
+        sel_op.value=-1
+        selector.appendChild(sel_op);
+
+        options.forEach(option => {
+            sel_op = document.createElement("option"); 
+            sel_op.value = option.id; 
+            sel_op.innerHTML = option.name; 
+            selector.appendChild(sel_op);
+        });
+
+        // container for bootstrap
+        selector.classList.add("form-select");
+
+        sel_cont = document.createElement("div");
+        sel_cont.classList.add("mb-3");
+
+        sel_lbl = document.createElement("label");
+        sel_lbl.classList.add("form-label");
+        sel_lbl.innerHTML = label;
+
+        sel_cont.appendChild(sel_lbl);
+        sel_cont.appendChild(selector);
+        
+        document.getElementById("extended_form").appendChild(sel_cont);
+    }
+
+    function submit_form(event){
+        event.preventDefault();
+
+        params   = new FormData(event.target);
+        date     = params.getAll("date")
+        user     = params.getAll("user")
+        activity = params.getAll("activity")
+        machine  = document.getElementById("sel_machines")  ? params.getAll("machine") : null;
+        material = document.getElementById("sel_materials") ? params.getAll("material") : null;
+        workshop = document.getElementById("sel_workshops") ? params.getAll("workshop") : null;
+
+        console.log(date)
+
+        if(date != '' && user != '' && activity != -1 && machine != -1  && material != -1 && workshop != -1){
+            xhttp = new XMLHttpRequest();
+            xhttp.onload = function() {
+                answer = JSON.parse(this.responseText);
+                if(answer["result"] == "success"){
+                    var alert =  document.getElementById("success_alert")
+                    alert.innerHTML = "Benvingut " + user;
+                    alert.classList.remove("visually-hidden");
+                    document.getElementById("btn_submit").classList.add("visually-hidden");
+                }else{
+                    console.log("Error");
+                }
+                setTimeout(init, 5000);
+            }
+            xhttp.open("POST", "checkin", false);
+            xhttp.send(params);
+        }
+    }
+    document.addEventListener("readystatechange", function(event){
+        if(event.target.readyState=="complete"){
+            document.getElementById("sel_activity").addEventListener("change", loadActivityDetails);
+            document.getElementById("form_signin").addEventListener("submit", submit_form);
+            init();
+        }
+    });
+</script>
+{% endblock %}

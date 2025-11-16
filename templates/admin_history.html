@@ -1,0 +1,27 @@
+{% extends "template.html" %}
+{% block content %}
+<table class="table table-striped"">
+    <thead>
+        <tr>
+            <th scope="col">Date</th>
+            <th scope="col">User</th>
+            <th scope="col">Activity</th>
+            <th scope="col">Machine</th>
+            <th scope="col">Material</th>
+            <th scope="col">Workshop</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for signin in history %}
+        <tr>
+            <td scope="row">{{ signin[0] }}</td>
+            <td>{{ signin[1] }}</td>
+            <td>{{ signin[2] }}</td>
+            <td>{{ signin[3] }}</td>
+            <td>{{ signin[4] }}</td>
+            <td>{{ signin[5] }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

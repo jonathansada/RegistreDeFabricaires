@@ -1,4 +1,4 @@
-# packages in environment at /mnt/data/Projects/miniforge/envs/EspluLab:
+# packages in environment at /mnt/data/Projects/miniforge/envs/RegFab:
 #
 # Name                     Version          Build               Channel
 _libgcc_mutex              0.1              conda_forge         conda-forge
@@ -30,6 +30,7 @@ ncurses                    6.5              h2d0b736_3          conda-forge
 openssl                    3.6.0            h26f9b46_0          conda-forge
 pip                        25.3             pyh145f28c_0        conda-forge
 python                     3.14.0           h32b2ec7_102_cp314  conda-forge
+python-dotenv              1.2.1            pypi_0              pypi
 python_abi                 3.14             8_cp314             conda-forge
 readline                   8.2              h8c095d6_2          conda-forge
 sqlalchemy                 2.0.44           pypi_0              pypi

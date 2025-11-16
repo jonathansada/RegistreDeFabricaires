@@ -11,7 +11,7 @@ This is expected to be using Conda (throough micro-forge)
 ## 1. Prepare the environment
 Install the conda environment
 ``` bash
-conda env create --name EspluLab --file base_env.yml
+conda env create --name RegFab --file base_env.yml
 ```
 
 Install pip requirements
@@ -24,7 +24,13 @@ Duplicate the file `template.env` as `.env`
 cp template.env .env
 ```
 
-And set the environment vars for the application
+And set the [environment](#environment-vars) vars for the application
+
+## 3. Poplulate the database (*optional*)
+``` bash
+conda activate RegFab
+python filldb.py
+```
 
 # Environment Vars
 - **DB_CON_STRING**: A valid SQLAlchemy [Database URL](https://docs.sqlalchemy.org/en/21/core/engines.html#database-urls) (tested on SQLite)
@@ -34,6 +40,6 @@ And set the environment vars for the application
 # Run App (Debug Mode)
 This is expected to be executed in the project main directory
 ``` bash
-conda activate EspluLab
+conda activate RegFab
 flask --app . run --debug
 ```

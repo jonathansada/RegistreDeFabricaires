@@ -1,26 +1,37 @@
 {% extends "template.html" %}
 {% block content %}
-<table class="table table-striped"">
-    <thead>
-        <tr>
-            <th scope="col">Data</th>
-            <th scope="col">Nom</th>
-            <th scope="col">Cognom</th>
-            <th scope="col">Activitat</th>
-            <th scope="col">Màquina</th>
-            <th scope="col">Material</th>
-            <th scope="col">Us de l'espai(h)</th>
-            <th scope="col">Us del maquinari(h)</th>
-        </tr>
-    </thead>
-    <tbody>
-    {% for signin in history %}
-        <tr>
-            {% for field in range(8) %}
-                <td>{{ signin[field] }}</td>
+<div class="row">
+    <div class="col-sm-12  float-end text-end">
+        <a href="./admin/export" class="btn btn-info">Descarregar CSV</a>
+        &nbsp;
+        <a href="./admin/logout" class="btn btn-danger">Tancar Sessio</a>
+    </div>
+</div>
+<div class="row mt-3"> 
+    <div class="col-sm-12">
+        <table class="table table-striped"">
+            <thead>
+                <tr>
+                    <th scope="col">Data</th>
+                    <th scope="col">Nom</th>
+                    <th scope="col">Cognom</th>
+                    <th scope="col">Activitat</th>
+                    <th scope="col">Màquina</th>
+                    <th scope="col">Material</th>
+                    <th scope="col">Us de l'espai(h)</th>
+                    <th scope="col">Us del maquinari(h)</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for signin in history %}
+                <tr>
+                    {% for field in range(8) %}
+                        <td>{{ signin[field] }}</td>
+                    {% endfor %}
+                </tr>
             {% endfor %}
-        </tr>
-    {% endfor %}
-    </tbody>
-</table>
+            </tbody>
+        </table>
+    </div>
+</div>
 {% endblock %}

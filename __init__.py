@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 
-from flask import Flask, request, render_template, session, redirect, jsonify
+from flask import Flask, request, render_template, session, redirect, jsonify, make_response
 from .src.regfab import RegFab
 
 load_dotenv()
@@ -69,6 +69,16 @@ def admin():
             return render_template('admin_history.html', history = app.getSignInHistory())
         else:
             return render_template('admin_form.html')
+
+@front.route("/admin/export", methods=['GET'])
+def admin_export():
+    if 'admin' in session:
+        resp = make_response(app.historyToCSV())
+        resp.headers["Content-Disposition"] = "attachment; filename=regfab_export.csv"
+        resp.headers["Content-Type"] = "text/csv"
+        return resp
+    else:
+        return redirect("/admin")
 
 
 @front.route("/admin/logout")

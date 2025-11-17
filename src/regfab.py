@@ -1,4 +1,5 @@
 from .database import *
+import pandas as pd
 
 class RegFab():
     def __init__(self, connection, debug=False):
@@ -53,7 +54,11 @@ class RegFab():
                                    ).order_by(Visit.date).all()
         self.session.close()
         return result
-    
+
+    def historyToCSV(self):
+        his_df = pd.DataFrame(self.getSignInHistory())
+        return his_df.to_csv()
+        
     def signin(self, date, fname, sname, activity, visit_length, machine, machine_usage, material):
         self.session.begin()
         try:
@@ -74,3 +79,4 @@ class RegFab():
         self.session.close()
 
         return True
+

@@ -2,20 +2,19 @@ import os
 from dotenv import load_dotenv
 
 from flask import Flask, request, render_template, session, redirect, jsonify
-from .src.database import Database
+from .src.regfab import RegFab
 
 load_dotenv()
-app = Flask(__name__)
-app.secret_key = os.getenv('FLASK_SECRET')
+front = Flask(__name__)
+front.secret_key = os.getenv('FLASK_SECRET')
 
-dbConnection = os.getenv('DB_CON_STRING')
-debug = bool(os.getenv('DB_DEBUG'))
+app = RegFab(connection=os.getenv('DB_CON_STRING'), debug=bool(os.getenv('DB_DEBUG')))
 
 ###########
 # User Side
 ###########
-@app.route("/", methods=['GET'])
-@app.route('/checkin', methods=['GET', "POST"])
+@front.route("/", methods=['GET'])
+@front.route('/checkin', methods=['GET', "POST"])
 def chekin_get():
     if request.method == 'POST':
         date        = request.form['date']
@@ -24,35 +23,30 @@ def chekin_get():
         activity_id = request.form['activity']
         visit_time  = request.form['visit_time']
 
-        db = Database(connection=dbConnection, debug=debug)
-        activity      = db.getActivity(activity_id)
+        activity      = app.getActivity(activity_id)
         machine_id    = request.form['machine']       if activity.machine  else None
         machine_usage = request.form['machine_usage'] if activity.machine  else 0
         material_id   = request.form['material']      if activity.material else None
                 
-        result = db.signin(date, fname, sname, activity_id, visit_time, machine_id, machine_usage, material_id)
+        result = app.signin(date, fname, sname, activity_id, visit_time, machine_id, machine_usage, material_id)
 
         if result == True:
             return jsonify({"result":"success"})
         else:
             return jsonify({"result":"error"})
     else:
-        db = Database(connection=dbConnection, debug=debug)
-        return render_template('checkin_form.html', activities = db.getAllActivities(), visit_lengths = db.getAllVisitLengths())
+        return render_template('checkin_form.html', activities = app.getAllActivities(), visit_lengths = app.getAllVisitLengths())
 
-@app.route('/getActivityDetails/<activity_id>', methods=['GET', "POST"])
+@front.route('/getActivityDetails/<activity_id>', methods=['GET', "POST"])
 def getActivityDetails(activity_id):
     answer = {"machines": False, "materials": False}
-
-    db = Database(connection=dbConnection, debug=debug)
-
-    activity = db.getActivity(activity_id)
+    activity = app.getActivity(activity_id)
     if activity.machine:
-        answer["machines"]      = [{"id":machine[0], "name": machine[1]} for machine in db.getActivityMachines(activity_id)]
-        answer["machine_usage"] = [{"id":usage[0],   "name": usage[1]}   for usage   in db.getAllMachineUsages()]
+        answer["machines"]      = [{"id":machine[0], "name": machine[1]} for machine in app.getActivityMachines(activity_id)]
+        answer["machine_usage"] = [{"id":usage[0],   "name": usage[1]}   for usage   in app.getAllMachineUsages()]
 
     if activity.material:
-        answer["materials"] = [{"id":material[0], "name": material[1]} for material in db.getAllMaterials()]
+        answer["materials"] = [{"id":material[0], "name": material[1]} for material in app.getAllMaterials()]
 
     return jsonify(answer)
 
@@ -60,7 +54,7 @@ def getActivityDetails(activity_id):
 ############
 # Admin Side
 ############
-@app.route("/admin", methods=['GET', "POST"])
+@front.route("/admin", methods=['GET', "POST"])
 def admin():
     if request.method == 'POST':
         user     = request.form['user']
@@ -72,13 +66,12 @@ def admin():
         return redirect("/admin")
     else:
         if 'admin' in session:
-            db = Database(connection=dbConnection, debug=debug)
-            return render_template('admin_history.html', history = db.getSignInHistory())
+            return render_template('admin_history.html', history = app.getSignInHistory())
         else:
             return render_template('admin_form.html')
 
 
-@app.route("/admin/logout")
+@front.route("/admin/logout")
 def admin_logout():
     if 'admin' in session:
         session.pop('admin', None)

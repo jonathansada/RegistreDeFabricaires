@@ -1,11 +1,10 @@
 import os
 from dotenv import load_dotenv
 
-from sqlalchemy import create_engine, func, ForeignKey, Integer, String, DateTime
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, sessionmaker
-from typing import List, Optional
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
 
-from src.database import Base, Visit, Activity, Machine, Material, VisitLength, MachineUsage
+from src.database import *
 
 load_dotenv()
 engine = create_engine(os.getenv('DB_CON_STRING'), echo=True)

@@ -1,39 +1,61 @@
 {% extends "template.html" %}
 {% block content %}
-<form id="form_signin" method="POST" action="checkin">
+<div class="row">
+    <div class="col-sm-12">
+        <h1>Registre de Fabricaires</h1>
+    </div>
+    
+</div>
+<hr/>
+<form id="form_signin" method="POST" action="checkin" >
     <div class="row mb-3">
-        <div class="col">
+        <div class="col-md-6">
             <label for="fname" class="form-label">Nom:</label>
-            <input type="text" name="fname" class="form-control"/>
+            <input type="text" name="fname" class="form-control" required  minlength="3" />
         </div>
-        <div class="col">
+        <div class="col-md-6">
             <label for="sname" class="form-label">Cognom:</label>
-            <input type="text" name="sname" class="form-control"/>
+            <input type="text" name="sname" class="form-control" required  minlength="3" />
         </div>
     </div>
-    <div class="row mb-3">
-        <div class="col">
-            <label for="date" class="form-label">Activitat:</label>
-            <select id="sel_activity" name="activity" class="form-select" aria-describedby="activityHelp">
-                <option value="-1" selected> </option>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="date" class="form-label">Data i hora d'inici:</label>
+            <input id="in_date" type="datetime-local" name="date" value="" class="form-control"/>
+        </div>
+        <div class="col-md-6 mb-3">
+            <label for="visit_time" class="form-label">Duració de la visita:</label>
+            <select id="sel_visit_time" name="visit_time" class="form-select" required>
+                <option value="" selected> </option>
+                {% for length in visit_lengths %}
+                    <option value="{{length[0]}}">{{length[1]}}</option>
+                {% endfor %}
+            </select>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-6 mb-3">
+            <label for="activity" class="form-label">Activitat duta a terme:</label>
+            <select id="sel_activity" name="activity" class="form-select" required>
+                <option value="" selected> </option>
                 {% for activity in activities %}
                     <option value="{{activity[0]}}">{{activity[1]}}</option>
                 {% endfor %}
             </select>
-            <div id="activityHelp" class="form-text">Seleccioni el motiu de la seva visita.</div>
-        </div>
-        <div class="col">
-            <label for="date" class="form-label">Data i hora d'inici:</label>
-            <input id="in_date" type="datetime-local" name="date" value="" class="form-control"/>
         </div>
     </div>
-    <div id="extended_form" class="mb-3">
+    <div id="extended_form" class="row">
+       
+    </div>
 
-    </div>
     <div class="alert alert-success visually-hidden" role="alert" id="success_alert">
         A simple success alert—check it out!
     </div>
-    <input id="btn_submit" type="submit" value="Envià" class="btn btn-primary"/>
+    <div class="row ">
+        <div class="col-sm-12 col-md-2 offset-md-10">
+            <input id="btn_submit" type="submit" value="Envià" class="btn btn-primary btn-block w-100"/>
+        </div>
+    </div>
 </form>
 
 <script>    
@@ -67,7 +89,8 @@
 
                 document.getElementById("extended_form").innerHTML="";
                 if(answer.machines != false){
-                    addFormSelector("Quina màquina faràs servir?", "sel_machines", "machine", answer.machines);
+                    addFormSelector("Maquinari utilitzat:", "sel_machines", "machine", answer.machines);
+                    addFormSelector("Temps d'utilització:", "sel_machine_usage", "machine_usage", answer.machine_usage);
                 }
                 if(answer.materials != false){
                     addFormSelector("Quin material faràs servir?", "sel_materials", "material",  answer.materials);
@@ -84,9 +107,10 @@
         selector = document.createElement("select");
         selector.id = id;
         selector.name = name;      
+        selector.required="required";
 
         sel_op = document.createElement("option")
-        sel_op.value=-1
+        sel_op.value=""
         selector.appendChild(sel_op);
 
         options.forEach(option => {
@@ -100,6 +124,7 @@
         selector.classList.add("form-select");
 
         sel_cont = document.createElement("div");
+        sel_cont.classList.add("col-md-6");
         sel_cont.classList.add("mb-3");
 
         sel_lbl = document.createElement("label");
@@ -115,15 +140,17 @@
     function submit_form(event){
         event.preventDefault();
 
-        params   = new FormData(event.target);
-        date     = params.getAll("date")
-        fname    = params.getAll("fname")
-        sname    = params.getAll("sname")
-        activity = params.getAll("activity")
-        machine  = document.getElementById("sel_machines")  ? params.getAll("machine") : null;
-        material = document.getElementById("sel_materials") ? params.getAll("material") : null;
+        params         = new FormData(event.target);
+        date           = params.getAll("date")
+        fname          = params.getAll("fname")
+        sname          = params.getAll("sname")
+        activity       = params.getAll("activity")
+        visit_time     = document.getElementById("sel_visit_time")    ? params.getAll("visit_time") : null;
+        machine        = document.getElementById("sel_machines")      ? params.getAll("machine") : null;
+        machine_usage  = document.getElementById("sel_machine_usage") ? params.getAll("machine_usage") : null;
+        material       = document.getElementById("sel_materials")     ? params.getAll("material") : null;
         
-        if(date != '' && fname != '' && sname != '' && activity != -1 && machine != -1  && material != -1){
+        if(date != '' && fname != '' && sname != '' && activity != -1 && visit_time != -1 && machine != -1 && machine_usage != -1 && material != -1){
             xhttp = new XMLHttpRequest();
             xhttp.onload = function() {
                 answer = JSON.parse(this.responseText);

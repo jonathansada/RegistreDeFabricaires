@@ -76,7 +76,13 @@ Stop the container:
 $ podman-compose down
 ```
 
-Force upgrade the container:
+Force upgrade the container (if needed):
 ``` bash
 $ podman-compose up -d --build
 ```
+
+Fill database (if needed):
+```bash
+$ podman exec registredefabricaires_regfab_1 "python /regfab/filldb.py"
+```
+(to get the container_name use `docker ps`)

@@ -1,4 +1,4 @@
-# packages in environment at /mnt/data/Projects/miniforge/envs/RegFab:
+# packages in environment at /miniforge/envs/RegFab:
 #
 # Name                     Version          Build               Channel
 _libgcc_mutex              0.1              conda_forge         conda-forge

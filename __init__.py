@@ -2,19 +2,22 @@ import os
 from dotenv import load_dotenv
 
 from flask import Flask, request, render_template, session, redirect, jsonify, make_response
-from .src.regfab import RegFab
+try: # Production
+    from src.regfab import RegFab
+except: # Local
+    from .src.regfab import RegFab
 
 load_dotenv()
-front = Flask(__name__)
-front.secret_key = os.getenv('FLASK_SECRET')
+flask = Flask(__name__)
+flask.secret_key = os.getenv('FLASK_SECRET')
 
 app = RegFab(connection=os.getenv('DB_CON_STRING'), debug=bool(os.getenv('DB_DEBUG')))
 
 ###########
 # User Side
 ###########
-@front.route("/", methods=['GET'])
-@front.route('/checkin', methods=['GET', "POST"])
+@flask.route("/", methods=['GET'])
+@flask.route('/checkin', methods=['GET', "POST"])
 def chekin_get():
     if request.method == 'POST':
         date        = request.form['date']
@@ -37,7 +40,7 @@ def chekin_get():
     else:
         return render_template('checkin_form.html', activities = app.getAllActivities(), visit_lengths = app.getAllVisitLengths())
 
-@front.route('/getActivityDetails/<activity_id>', methods=['GET', "POST"])
+@flask.route('/getActivityDetails/<activity_id>', methods=['GET', "POST"])
 def getActivityDetails(activity_id):
     answer = {"machines": False, "materials": False}
     activity = app.getActivity(activity_id)
@@ -54,7 +57,7 @@ def getActivityDetails(activity_id):
 ############
 # Admin Side
 ############
-@front.route("/admin", methods=['GET', "POST"])
+@flask.route("/admin", methods=['GET', "POST"])
 def admin():
     if request.method == 'POST':
         user     = request.form['user']
@@ -70,7 +73,7 @@ def admin():
         else:
             return render_template('admin_form.html')
 
-@front.route("/admin/export", methods=['GET'])
+@flask.route("/admin/export", methods=['GET'])
 def admin_export():
     if 'admin' in session:
         resp = make_response(app.historyToCSV())
@@ -81,7 +84,7 @@ def admin_export():
         return redirect("/admin")
 
 
-@front.route("/admin/logout")
+@flask.route("/admin/logout")
 def admin_logout():
     if 'admin' in session:
         session.pop('admin', None)

@@ -1,0 +1,12 @@
+services:
+  regfab:
+    image: regfab
+    build:
+      context: ./
+      dockerfile: Containerfile
+    restart: unless-stopped
+    env_file: ".env"
+    volumes:
+      - ./data:/regfab/data
+    ports:
+      - 9001:8000

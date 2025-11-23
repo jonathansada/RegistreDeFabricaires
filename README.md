@@ -39,9 +39,44 @@ python filldb.py
 - **ADMIN_USER**: Username for the administration space.
 - **ADMIN_PASSWORD**: Password for the administration space.
 
-# Run App (Debug Mode)
+It's recommended to generate a unike secret key for **FLASK_SECRET** with:
+``` bash
+python -c 'import secrets; print(secrets.token_hex())'
+```
+
+
+# Run Application
+## Development / Local Mode 
 This is expected to be executed in the project main directory
 ``` bash
 conda activate RegFab
 flask --app . run --debug
+```
+
+## Deployment mode
+### Podman / Docker
+Create container image:
+``` bash
+$ podman build -t regfab .
+```
+
+Run app
+``` bash
+podman run -p 8000:8000 -v ./data:/regfab/data regfab
+```
+
+### Compose (recomended)
+Init the container:
+``` bash
+$ podman-compose up -d
+```
+
+Stop the container:
+``` bash
+$ podman-compose down
+```
+
+Force upgrade the container:
+``` bash
+$ podman-compose up -d --build
 ```

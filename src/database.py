@@ -13,12 +13,20 @@ class Visit(Base):
     date          = mapped_column(DateTime(timezone=False), insert_default=func.now(), nullable=False)
     name          = mapped_column(String, nullable=False)
     surname       = mapped_column(String, nullable=False)
+    age           = mapped_column(ForeignKey("ages.id"), nullable=False)
     activity      = mapped_column(ForeignKey("activities.id"), nullable=False)
     machine       = mapped_column(ForeignKey("machines.id"), nullable=True)
     material      = mapped_column(ForeignKey("materials.id"), nullable=True)
     visit_length  = mapped_column(Integer, nullable=False) # Time the user has been in the fabrication space
     machine_usage = mapped_column(Integer, nullable=True) # Time the user has been using the machine
     description   = mapped_column(String, nullable=True)
+
+class Age(Base):
+    __tablename__ = "ages"
+
+    id        = mapped_column(Integer, primary_key=True, autoincrement=True)
+    name      = mapped_column(String,  unique=True, nullable=False)
+    order     = mapped_column(Integer)
 
 class Activity(Base):
     __tablename__ = "activities"

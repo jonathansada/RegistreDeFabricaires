@@ -2,7 +2,9 @@
 {% block content %}
 <div class="row">
     <div class="col-sm-12  float-end text-end">
-        <a href="./admin/export" class="btn btn-info">Descarregar CSV</a>
+        <a href="./admin/export" class="btn btn-primary">Descarregar CSV</a>
+        &nbsp;
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#cleanModal">Buidar el registre</button>
         &nbsp;
         <a href="./admin/logout" class="btn btn-danger">Tancar Sessio</a>
     </div>
@@ -15,6 +17,7 @@
                     <th scope="col">Data</th>
                     <th scope="col">Nom</th>
                     <th scope="col">Cognom</th>
+                    <th scope="col">Edat</th>
                     <th scope="col">Activitat</th>
                     <th scope="col">Màquina</th>
                     <th scope="col">Material</th>
@@ -25,7 +28,7 @@
             <tbody>
             {% for signin in history %}
                 <tr>
-                    {% for field in range(8) %}
+                    {% for field in range(9) %}
                         <td>{{ signin[field] }}</td>
                     {% endfor %}
                 </tr>
@@ -34,4 +37,36 @@
         </table>
     </div>
 </div>
+
+<!-- Modal -->
+<div class="modal fade" id="cleanModal" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1" aria-labelledby="cleanModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h1 class="modal-title fs-5" id="cleanModalLabel">Modal title</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Esteu segurs que voleu buidar el registre de fabricaires?
+        <br/><b/>
+        Aquesta acciò no podrà ser desfeta.
+      </div>
+      <div class="modal-footer">
+        <a href="./admin/cleandb" class="btn btn-danger">Buidar Registre</a>
+        <button type="button" class="btn btn-success" data-bs-dismiss="modal">Manetnir Registre</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+  function downloadCSV(){
+    xhttp = new XMLHttpRequest();
+    xhttp.onload = function() {
+        console.log(this.responseText);
+    }
+    xhttp.open("GET", "/admin/export", true);
+    xhttp.send();
+  }
+</script>
+
 {% endblock %}

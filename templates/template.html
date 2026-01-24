@@ -2,7 +2,6 @@
 <html>
     <head>
         <link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='css/bootstrap.min.css') }}" />
-        
         <title>EspluLab - CheckIn System</title>
     </head>
     <body>
@@ -14,16 +13,6 @@
         <div class="container">      
             {% block content %}{% endblock %}
         </div>
-        <!--<script type="javascript" src= "{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>-->
-        <script type="importmap">
-        {
-            "imports": {
-                "bootstrap": "{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"
-            }
-        }
-        </script>
-        <script type="module">
-            import * as bootstrap from 'bootstrap'
-        </script>
+        <script src="{{ url_for('static',filename='js/bootstrap.bundle.min.js') }}"></script>
     </body>
 </html>

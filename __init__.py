@@ -23,6 +23,7 @@ def chekin_get():
         date        = request.form['date']
         fname       = request.form['fname']
         sname       = request.form['sname']
+        age_id      = request.form['age']
         activity_id = request.form['activity']
         visit_time  = request.form['visit_time']
 
@@ -31,14 +32,14 @@ def chekin_get():
         machine_usage = request.form['machine_usage'] if activity.machine  else 0
         material_id   = request.form['material']      if activity.material else None
                 
-        result = app.signin(date, fname, sname, activity_id, visit_time, machine_id, machine_usage, material_id)
+        result = app.signin(date, fname, sname, age_id, activity_id, visit_time, machine_id, machine_usage, material_id)
 
         if result == True:
             return jsonify({"result":"success"})
         else:
             return jsonify({"result":"error"})
     else:
-        return render_template('checkin_form.html', activities = app.getAllActivities(), visit_lengths = app.getAllVisitLengths())
+        return render_template('checkin_form.html', ages = app.getAllAges(), activities = app.getAllActivities(), visit_lengths = app.getAllVisitLengths())
 
 @flask.route('/getActivityDetails/<activity_id>', methods=['GET', "POST"])
 def getActivityDetails(activity_id):
@@ -76,13 +77,19 @@ def admin():
 @flask.route("/admin/export", methods=['GET'])
 def admin_export():
     if 'admin' in session:
+        from datetime import datetime
         resp = make_response(app.historyToCSV())
-        resp.headers["Content-Disposition"] = "attachment; filename=regfab_export.csv"
+        resp.headers["Content-Disposition"] = f"attachment; filename=registre_de_fabricaires_{datetime.now().strftime('%Y-%m-%dT%H:%M')}.csv"
         resp.headers["Content-Type"] = "text/csv"
         return resp
     else:
         return redirect("/admin")
 
+@flask.route("/admin/cleandb", methods=['GET'])
+def admin_clean():
+    if 'admin' in session:
+        app.delHistory()
+    return redirect("/admin")
 
 @flask.route("/admin/logout")
 def admin_logout():

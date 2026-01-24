@@ -24,6 +24,12 @@ session.add(Activity(name="Robotica i Elèctronica",  machine=False, material=Fa
 session.add(Activity(name="Escaner 3D",              machine=False, material=False, id=7, order=7))
 session.add(Activity(name="Altres",                  machine=False, material=False, id=8, order=8))
 
+# Ages
+session.add(Age(name="Menys de 12 anys", order=1))
+session.add(Age(name="De 12 a 18 anys", order=2))
+session.add(Age(name="De 19 a 65 anys", order=3))
+session.add(Age(name="Més de 65 anys", order=4))
+
 # Machines
 session.add(Machine(name="Prusa i3 Mk3", activity=1, order=1))
 session.add(Machine(name="Ender3 v2", activity=1, order=3))
